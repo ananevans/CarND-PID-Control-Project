@@ -31,6 +31,10 @@ class PID {
    */
   double TotalError();
 
+  void debug_info();
+
+  void reset_errors();
+
  private:
   /**
    * PID Errors
@@ -45,6 +49,7 @@ class PID {
   double Kp;
   double Ki;
   double Kd;
+
 };
 
 #endif  // PID_H

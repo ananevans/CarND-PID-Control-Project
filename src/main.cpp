@@ -4,10 +4,13 @@
 #include <string>
 #include "json.hpp"
 #include "PID.h"
+#include "Twiddle.h"
 
 // for convenience
 using nlohmann::json;
 using std::string;
+
+#define  MAX_COUNT 200
 
 // For converting back and forth between radians and degrees.
 constexpr double pi() { return M_PI; }
@@ -33,12 +36,22 @@ string hasData(string s) {
 int main() {
   uWS::Hub h;
 
+  Twiddle twiddle;
   PID pid;
+  bool run_twiddle = true;
+  int count = 0;
+  double error = 0;
+
   /**
    * TODO: Initialize the pid variable.
    */
+  vector<double> p = twiddle.get_p();
+  pid.Init(p[0], p[1], p[2]);
 
-  h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
+  twiddle.debug_info();
+
+  h.onMessage([&pid,&twiddle,&run_twiddle,&count, &error]
+			   (uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                      uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
@@ -63,7 +76,34 @@ int main() {
            * NOTE: Feel free to play around with the throttle and speed.
            *   Maybe use another PID controller to control the speed!
            */
-          
+          pid.UpdateError(cte);
+          pid.debug_info();
+
+          if (run_twiddle) {
+        	  twiddle.update( error );
+        	  if (count < MAX_COUNT) {
+        		  error += cte * cte;
+        		  count += 1;
+        	  } else {
+        		  cout << "average error: " << error/MAX_COUNT << "\n";
+        		  if (error/MAX_COUNT < 0.01) {
+        			  run_twiddle = false;
+        		  }
+        		  count = 0;
+        		  error = 0.0;
+        		  pid.reset_errors();
+        		  // reset
+        		  string msg = "42[\"reset\",{}]";
+        		  ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+        	  }
+
+        	  twiddle.debug_info();
+        	  vector<double> p = twiddle.get_p();
+        	  pid.Init(p[0], p[1], p[2]);
+          }
+
+          steer_value = pid.TotalError();
+
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value 
                     << std::endl;
