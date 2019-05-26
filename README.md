@@ -43,10 +43,10 @@ A PID controller is a control loop feedback for systems with a target output val
 
 The formula used to calculate the process variable is:
 
-![PID COntroller Equation](http://latex.codecogs.com/gif.latex?y%28t%29%20%3D%20SP%20-%20Kp%20*%20e%28t%29%20-%20Ki%20*%20%5Cint%20e%28t%29%20dt%20-%20Kd%20*%20%5Cfrac%7Bde%28t%29%29%7D%7Bdt%7D)
+![PID COntroller Equation](http://latex.codecogs.com/gif.latex?y%28t%29%20%3D%20SP%20-%20K_p%20e%28t%29%20-%20K_i%20%5Cint_0%5Et%20e%28t%29%20dt%20-%20K_p%20%5Cfrac%7Bde%28t%29%7D%7Bdt%7D)
 
 
-The correction term has three compenents:
+The correction term has three components:
 
 * *P*: proportional to the error term
 * *I*: proportional to the integral of the error
@@ -58,7 +58,7 @@ The *P* term is larger as the error gets larger. The correction of the *P* term 
 
 The PID controller may be used to determine the steering and the throttle variables. The erorr is provided at each step by the simulator.
 
-Assuming that the error and process variables are measures at fixed time intervals, we can use the following formula:
+Assuming that the error and process variables are measured at fixed time intervals, we can use the following formula:
 
 ![Discrete Time Formula](http://latex.codecogs.com/gif.latex?s%20%3D%20-Kp%20*%20CTE_i%20-%20Ki%20%5Csum_%7Bk%7D%5E%7Bi%7D%20CTI_k%20-%20Kd%20%28CTE_i%20-%20CTE_%28i-1%29%29)
 
@@ -72,8 +72,8 @@ The reason for using the absolute value of the eror is that the vehicle should s
 
 ## The Process of Determining the Constant Values
 
-I started by using a 0.1 value for throttle and 1, 0, 0 for the proportional, intergral and derivative constants. The car stayed on the road, but swerved a lot. With the values 1, 0, 0.5 the car has a reasonable trajectory. Next, I increased the throttle to 0.2 and the car started to swerve a lot more. I increased the derivative component step by step to 4, and the lowered the proportinal one to 0.4. Next, I increased the throttle to 0.4 and experimentally I determined an acceptable set of constants: 0.5, 0, 4.2. I tried to find a set of constants for throttle 0.4, but could not find one.
+I started by using a 0.1 value for throttle and 1, 0, 0 for the proportional, integral and derivative constants. The car stayed on the road, but swerved a lot. With the values 1, 0, 0.5 the car has a reasonable trajectory. Next, I increased the throttle to 0.2 and the car started to swerve a lot more. I increased the derivative component step by step to 4, and the lowered the proportinal one 0.4. Next, I increased the throttle to 0.4 and experimentally I determined an acceptable set of constants: 0.5, 0, 4.2. I tried to find a set of constants for throttle 0.6, but could not find one.
 
-With the values 0.5, 0, 4.2 for the proportinal, integral and derivative constants for the steering PID controller, I determined the following set of contants for the PID controller for throttle: 0.3, 0, 3.
+With the values 0.5, 0, 4.2 for the proportinal, integral and derivative constants for the steering PID controller, I determined the following set of constants for the throttle PID controller: 0.3, 0, 3.
 
-Finally, I fixed the values for the throttle controller and used the twiddle algorithm (implemented in Twiddle.cpp).
+Finally, I fixed the values for the throttle controller and used the twiddle algorithm (implemented in Twiddle.cpp) to find values for the steering PID controller. The final values for the steering PID controller are 0.7641, 0, 4.4.
