@@ -42,9 +42,7 @@ Tips for setting up your environment can be found [here](https://classroom.udaci
 A PID controller is a control loop feedback for systems with a target output value, called a set point, and a way of measuring the error between the target value and the process variable. The set point is denoted by *SP* and the process variable by *y(t)*. The error is also a function of time, and it is denoted by *e(t)*.
 
 The formula used to calculate the process variable is:
-\[
-y(t) = SP - Kp * e(t) - Ki * \int e(t) \dt - Kd * \frac{de}{dt}
-\]
+$$y(t) = SP - Kp * e(t) - Ki * \int e(t) \dt - Kd * \frac{de}{dt}$$
 
 
 The correction term has three parts:
