@@ -37,62 +37,37 @@ Fellow students have put together a guide to Windows set-up for the project [her
 
 Tips for setting up your environment can be found [here](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/23d376c7-0195-4276-bdf0-e02f1f3c665d)
 
-## Editor Settings
+## PID Controller
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+A PID controller is a control loop feedback for systems with a target output value, called a set point, and a way of measuring the error between the target value and the process variable. The set point is denoted by *SP* and the process variable by *y(t)*. The error is also a function of time, and it is denoted by *e(t)*.
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+The formula used to calculate the process variable is:
 
-## Code Style
+![PID COntroller Equation](http://latex.codecogs.com/gif.latex?y%28t%29%20%3D%20SP%20-%20K_p%20e%28t%29%20-%20K_i%20%5Cint_0%5Et%20e%28t%29%20dt%20-%20K_p%20%5Cfrac%7Bde%28t%29%7D%7Bdt%7D)
 
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
 
-## Project Instructions and Rubric
+The correction term has three components:
 
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
+* *P*: proportional to the error term
+* *I*: proportional to the integral of the error
+* *D*: proportinal to the derivative of error
 
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/e8235395-22dd-4b87-88e0-d108c5e5bbf4/concepts/6a4d8d42-6a04-4aa6-b284-1697c0fd6562)
-for instructions and the project rubric.
+The *P* term is larger as the error gets larger. The correction of the *P* term can sometimes be a little to large, and the output will oscillate around the set point *SP*. The *D* component reduces the amplitude of the oscilation. The *I* component corrects a bias in the error measurement.
 
-## Hints!
+## PID Controller for Self Driving Cars
 
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
+The PID controller may be used to determine the steering and the throttle variables. The erorr is provided at each step by the simulator.
 
-## Call for IDE Profiles Pull Requests
+Assuming that the error and process variables are measured at fixed time intervals, we can use the following formula:
 
-Help your fellow students!
+![Discrete Time Formula](http://latex.codecogs.com/gif.latex?s%20%3D%20SP%20-%20K_p%20*%20CTE%20-%20K_i%20%5Csum_%7Bk%3D0%7D%5E%7Bi%7D%20CTE_k%20-%20K_d%28CTE_i%20-%20CTE_%7Bi-1%7D%29)
 
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
+For steering, the set point is 0.0. For the throttle, I use the set point of 0.4 and for the error term the absolute value of the error provided by the simulator. We want to slow down wheter we are too far to the left or right.
 
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
+## The Process of Determining the Constant Values
 
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
+I started by using a 0.1 value for throttle and 1, 0, 0 for the proportional, integral and derivative constants. The car stayed on the road, but swerved a lot. With the values 1, 0, 0.5 the car has a reasonable trajectory. Next, I increased the throttle to 0.2 and the car started to swerve a lot more. I increased the derivative component step by step to 4, and then lowered the proportinal one 0.4. Next, I increased the throttle to 0.4 and experimentally I determined an acceptable set of constants: 0.5, 0, 4.2. I tried to find a set of constants for throttle 0.6, but could not find one.
 
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
+With the values 0.5, 0, 4.2 for the proportional, integral and derivative constants for the steering PID controller, using the same process, I determined the following set of constants for the throttle PID controller: 0.3, 0, 3.
 
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
+Finally, I fixed the values for the throttle controller and used the twiddle algorithm (implemented in Twiddle.cpp) to find values for the steering PID controller. The final values for the steering PID controller are 0.7641, 0, 4.4.
