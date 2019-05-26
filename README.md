@@ -66,8 +66,8 @@ For steering, the set point is 0.0. For the throttle, I use the set point of 0.4
 
 ## The Process of Determining the Constant Values
 
-I started by using a 0.1 value for throttle and 1, 0, 0 for the proportional, integral and derivative constants. The car stayed on the road, but swerved a lot. With the values 1, 0, 0.5 the car has a reasonable trajectory. Next, I increased the throttle to 0.2 and the car started to swerve a lot more. I increased the derivative component step by step to 4, and the lowered the proportinal one 0.4. Next, I increased the throttle to 0.4 and experimentally I determined an acceptable set of constants: 0.5, 0, 4.2. I tried to find a set of constants for throttle 0.6, but could not find one.
+I started by using a 0.1 value for throttle and 1, 0, 0 for the proportional, integral and derivative constants. The car stayed on the road, but swerved a lot. With the values 1, 0, 0.5 the car has a reasonable trajectory. Next, I increased the throttle to 0.2 and the car started to swerve a lot more. I increased the derivative component step by step to 4, and then lowered the proportinal one 0.4. Next, I increased the throttle to 0.4 and experimentally I determined an acceptable set of constants: 0.5, 0, 4.2. I tried to find a set of constants for throttle 0.6, but could not find one.
 
-With the values 0.5, 0, 4.2 for the proportinal, integral and derivative constants for the steering PID controller, I determined the following set of constants for the throttle PID controller: 0.3, 0, 3.
+With the values 0.5, 0, 4.2 for the proportional, integral and derivative constants for the steering PID controller, using the same process, I determined the following set of constants for the throttle PID controller: 0.3, 0, 3.
 
 Finally, I fixed the values for the throttle controller and used the twiddle algorithm (implemented in Twiddle.cpp) to find values for the steering PID controller. The final values for the steering PID controller are 0.7641, 0, 4.4.
