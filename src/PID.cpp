@@ -7,7 +7,8 @@
  * TODO: Complete the PID class. You may add any additional desired functions.
  */
 
-PID::PID() {
+PID::PID(double target) {
+	this->target = target;
 	reset_errors();
 }
 
@@ -35,13 +36,11 @@ double PID::TotalError() {
   /**
    * TODO: Calculate and return the total error
    */
-  return - Kp * p_error - Kd * d_error - Ki * i_error;
+  return target - Kp * p_error - Kd * d_error - Ki * i_error;
 }
 
 void PID::debug_info() {
-	std::cout << "kp " << Kp << " " << "ki " << Kd << " " << "ki " << Ki << " "
-			<< "p_error " << p_error << " " << "i_error " << i_error << " "
-			<< "d_error " << d_error << "\n";
+	std::cout << "kp " << Kp << " " << "ki " << Ki << " " << "kd " << Kd << "\n";
 }
 
 void PID::reset_errors() {

@@ -14,7 +14,7 @@ using namespace std;
 
 class Twiddle {
 public:
-	Twiddle();
+	Twiddle(double kp, double ki, double kd, double delta);
 	virtual ~Twiddle();
 
 	bool is_done();

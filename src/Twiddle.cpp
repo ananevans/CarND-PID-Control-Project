@@ -9,15 +9,16 @@
 
 #include <iostream>
 
-Twiddle::Twiddle() {
+
+Twiddle::Twiddle(double kp, double ki, double kd, double delta) {
 	run = 0;
 	index = 0;
-	p.push_back(1.0);
-	p.push_back(0.0);
-	p.push_back(0.0);
-	dp.push_back(1.0);
-	dp.push_back(1.0);
-	dp.push_back(1.0);
+	p.push_back(kp);
+	p.push_back(ki);
+	p.push_back(kd);
+	dp.push_back(delta);
+	dp.push_back(delta);
+	dp.push_back(delta);
 }
 
 Twiddle::~Twiddle() {
@@ -31,25 +32,22 @@ bool Twiddle::is_done() {
 void Twiddle::update( double error ) {
 	if (run == 0) {
 		if ( error < best_error ) {
-//			cout << "First then taken\n";
+			cout << "Error improved from " << best_error << " to " << error << " "; debug_info();
 			best_error = error;
 			dp[index] *= 1.1;
 			// setup for next run
 			index = (index+1)%3;
 			p[index] += dp[index];
 		} else {
-//			cout << "First else taken\n";
-//			cout << "Decreasing p " << index;
 			p[index] -= 2 * dp[index];
 			run = 1;
 		}
 	} else {
 		if ( error < best_error ) {
-//			cout << "Second then taken\n";
+			cout << "Error improved: "; debug_info();
 			best_error = error;
 			dp[index] *= 1.1;
 		} else {
-//			cout << "Second else taken\n";
 			p[index] += dp[index];
 			dp[index] *= 0.9;
 		}
@@ -64,6 +62,6 @@ vector<double> Twiddle::get_p() {
 }
 
 void Twiddle::debug_info() {
-	cout << "p: " << p[0] << " " << p[1] << " " << p[2] << "\n";
-	cout << "dp: " << dp[0] << " " << dp[1] << " " << dp[2] << "\n";
+	cout << "p: " << p[0] << " " << p[1] << " " << p[2];
+	cout << " dp: " << dp[0] << " " << dp[1] << " " << dp[2] << "\n";
 }

@@ -6,7 +6,7 @@ class PID {
   /**
    * Constructor
    */
-  PID();
+  PID(double target);
 
   /**
    * Destructor.
@@ -49,6 +49,8 @@ class PID {
   double Kp;
   double Ki;
   double Kd;
+
+  double target;
 
 };
 
