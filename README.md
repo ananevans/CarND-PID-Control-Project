@@ -52,7 +52,7 @@ The correction term has three components:
 * *I*: proportional to the integral of the error
 * *D*: proportinal to the derivative of error
 
-The *P* term is larger as the error gets larger. The correction of the *P* term can sometimes be a little to large, and the output will oscillate aound the set point *SP*. The *D* component reduces the amplitude of the oscilation. The *I* component corrects a bias in the error measurement.
+The *P* term is larger as the error gets larger. The correction of the *P* term can sometimes be a little to large, and the output will oscillate around the set point *SP*. The *D* component reduces the amplitude of the oscilation. The *I* component corrects a bias in the error measurement.
 
 ## PID Controller for Self Driving Cars
 
@@ -60,15 +60,9 @@ The PID controller may be used to determine the steering and the throttle variab
 
 Assuming that the error and process variables are measured at fixed time intervals, we can use the following formula:
 
-![Discrete Time Formula](http://latex.codecogs.com/gif.latex?s%20%3D%20-Kp%20*%20CTE_i%20-%20Ki%20%5Csum_%7Bk%7D%5E%7Bi%7D%20CTI_k%20-%20Kd%20%28CTE_i%20-%20CTE_%28i-1%29%29)
+![Discrete Time Formula](http://latex.codecogs.com/gif.latex?s%20%3D%20SP%20-%20K_p%20*%20CTE%20-%20K_i%20%5Csum_%7Bk%3D0%7D%5E%7Bi%7D%20CTE_k%20-%20K_d%28CTE_i%20-%20CTE_%7Bi-1%7D%29)
 
-For steering, the set point is 0.0. 
-
-For the throttle, I use the set point of 0.4 and for the error term the absolute value of the error provided by the simulator.
-
-![Throttle PID](http://latex.codecogs.com/gif.latex?s%20%3D%200.4%20-Kp%20*%20%5Cleft%20%7C%20CTE_i%20%5Cright%20%7C%20-%20Ki%20%5Csum_%7Bk%7D%5E%7Bi%7D%20%5Cleft%20%7C%20CTI_k%20%5Cright%20%7C%20-%20Kd%20%28%5Cleft%20%7C%20CTE_i%20%5Cright%20%7C%20-%20%5Cleft%20%7C%20CTE_%28i-1%29%20%5Cright%20%7C%29)
-
-The reason for using the absolute value of the eror is that the vehicle should slow down whether is left or right of center.
+For steering, the set point is 0.0. For the throttle, I use the set point of 0.4 and for the error term the absolute value of the error provided by the simulator. We want to slow down wheter we are too far to the left or right.
 
 ## The Process of Determining the Constant Values
 
